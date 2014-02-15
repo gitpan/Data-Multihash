@@ -1,8 +1,10 @@
-package Data::Multihash 0.03;
+package Data::Multihash;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
 use Set::Object qw(set);
+
+our $VERSION = '0.03';
 
 =head1 NAME
 
