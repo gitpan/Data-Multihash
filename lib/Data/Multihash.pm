@@ -1,4 +1,4 @@
-package Data::Multihash 0.02;
+package Data::Multihash 0.03;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
@@ -23,10 +23,6 @@ Data::Multihash - A hash table that supports multiple values per key.
 This module implements a multihash, which maps keys to sets of values.
 Multihashes are unordered.
 
-=cut
-
-our $VERSION = '0.01';
-
 =head1 CONSTRUCTORS
 
 =head2 new()
@@ -36,8 +32,7 @@ Create a new empty multihash.
 =cut
 
 sub new {
-    my ($class, $self) = (shift, {});
-    bless $self, $class;
+    bless {};
 }
 
 =head1 INSTANCE METHODS
@@ -56,8 +51,7 @@ sub insert {
     }
 }
 
-=head2 remove_key(@keys)
-=head2 remove_keys(@keys)
+=head2 remove_key(@keys), remove_keys(@keys)
 
 Remove all given keys and their values.
 
@@ -70,8 +64,7 @@ sub remove_key {
 
 *remove_keys = \&remove_key;
 
-=head2 remove_value(@values)
-=head2 remove_values(@values)
+=head2 remove_value(@values), remove_values(@values)
 
 Remove all given values from the multihash.
 
@@ -89,8 +82,7 @@ sub remove_value {
 
 *remove_values = \&remove_value;
 
-=head2 remove_pair(%pairs)
-=head2 remove_pairs(%pairs)
+=head2 remove_pair(%pairs), remove_pairs(%pairs)
 
 Remove all given (key, value) pairs from the multiset.
 
@@ -153,29 +145,40 @@ It is not safe to access a single multihash from multiple threads.
 Copyright (c) 2014, Radek Slupik
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
 
- * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
- * Neither the name of  nor the names of its contributors may be used to
-   endorse or promote products derived from this software without specific
-   prior written permission.
+=over
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
+=item *
+
+Redistributions of source code must retain the above copyright notice, this list
+of conditions and the following disclaimer.
+
+=item *
+
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+=item *
+
+Neither the name of  nor the names of its contributors may be used to    endorse
+or promote products derived from this software without specific    prior written
+permission.
+
+=back
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
