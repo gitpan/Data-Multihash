@@ -1,4 +1,4 @@
-package Data::Multihash;
+package Data::Multihash 0.02;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
@@ -42,20 +42,71 @@ sub new {
 
 =head1 INSTANCE METHODS
 
-=head2 insert([list])
+=head2 insert(%pairs)
 
 Insert key-value pairs.
 
 =cut
 
 sub insert {
-    my ($self, @pairs) = @_;
-    for (my $i = 0; $i < @pairs; $i += 2) {
-        my ($key, $value) = @pairs[$i, $i + 1];
-        $self->{$key} = set() unless $self->{$key};
-        $self->{$key}->insert($value);
+    my ($self, %pairs) = @_;
+    while (my ($k, $v) = each %pairs) {
+        $self->{$k} = set() unless $self->{$k};
+        $self->{$k}->insert($v);
     }
 }
+
+=head2 remove_key(@keys)
+=head2 remove_keys(@keys)
+
+Remove all given keys and their values.
+
+=cut
+
+sub remove_key {
+    my $self = shift;
+    delete $self->{$_} for @_;
+}
+
+*remove_keys = \&remove_key;
+
+=head2 remove_value(@values)
+=head2 remove_values(@values)
+
+Remove all given values from the multihash.
+
+=cut
+
+sub remove_value {
+    my $self = shift;
+    for (keys %$self) {
+        next unless exists $self->{$_};
+        my $set = $self->{$_};
+        $set->remove(@_);
+        delete $self->{$_} unless $set->size;
+    }
+}
+
+*remove_values = \&remove_value;
+
+=head2 remove_pair(%pairs)
+=head2 remove_pairs(%pairs)
+
+Remove all given (key, value) pairs from the multiset.
+
+=cut
+
+sub remove_pair {
+    my ($self, %pairs) = @_;
+    while (my ($k, $v) = each %pairs) {
+        next unless exists $self->{$k};
+        my $set = $self->{$k};
+        $set->remove($v);
+        delete $self->{$k} unless $set->size;
+    }
+}
+
+*remove_pairs = \&remove_pair;
 
 =head2 elements($key)
 
@@ -68,6 +119,18 @@ sub elements {
     $self->{$key} || set();
 }
 
+=head2 values
+
+Return all values in the multihash as a list.
+
+=cut
+
+sub values {
+    my $self = shift;
+    my @sets = CORE::values %$self;
+    map $_->elements, @sets;
+}
+
 =head2 size
 
 Return the number of values in the multihash.
@@ -77,8 +140,43 @@ Return the number of values in the multihash.
 sub size {
     my $self = shift;
     my $result = 0;
-    $result += $_->size for (values %$self);
+    $result += $_->size for (CORE::values %$self);
     $result;
 }
+
+=head1 THREAD SAFETY
+
+It is not safe to access a single multihash from multiple threads.
+
+=head1 LICENSE
+
+Copyright (c) 2014, Radek Slupik
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of  nor the names of its contributors may be used to
+   endorse or promote products derived from this software without specific
+   prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+=cut
 
 1;
